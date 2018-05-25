@@ -206,7 +206,7 @@ EEOOFF
     endif
 
     if s:is_use_dvipdf
-        let l:tmp_root_dvi = glob(l:livepreview_buf_data['root_dir'] . '/**/*.dvi') . glob(l:livepreview_buf_data['root_dir'] . '/**/*.xdv')
+        let l:tmp_root_dvi = glob(l:tmp_root_dir . '/**/*.dvi') . glob(l:tmp_root_dir . '/**/*.xdv')
         let b:livepreview_buf_data['run_cmd'] =
                 \       'env ' .
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
