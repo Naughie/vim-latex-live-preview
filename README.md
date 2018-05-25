@@ -30,7 +30,7 @@ Add the plugin in the vim-plug section of your `~/.vimrc`:
 call plug#begin('~/.vim/plugged')
 [...]
 " A Vim Plugin for Lively Previewing LaTeX PDF Output
-Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
+Plug 'Naughie/vim-latex-live-preview', { 'for': 'tex' }
 [...]
 call plug#end()
 ```
@@ -50,7 +50,7 @@ Add the plugin in the Vundle section of your `~/.vimrc`:
 call vundle#begin()
 [...]
 " A Vim Plugin for Lively Previewing LaTeX PDF Output
-Plugin 'xuhdev/vim-latex-live-preview'
+Plugin 'Naughie/vim-latex-live-preview'
 [...]
 call vundle#end()
 ```
@@ -99,7 +99,7 @@ But you can specify your own viewer by setting `g:livepreview_previewer`
 option in your `.vimrc`:
 
 ```vim
-let g:livepreview_previewer = 'your_viewer'
+let g:livepreview_previewer = 'open -a Skim'
 ```
 
 Please note that not every pdf viewer could work with this plugin. Currently
@@ -113,7 +113,21 @@ fallbacks to `xelatex` if `pdflatex` is not present. These defaults can be
 overridden by setting `g:livepreview_engine` variable:
 
 ```vim
-let g:livepreview_engine = 'your_engine' . ' [options]'
+let g:livepreview_engine = 'xelatex -no-pdf'
+```
+
+### Bibtex
+`LLP` compiles bibliography files if such files exist. The default engine is `bibtex`, but it can be modified by setting `g:livepreview_bibtex` variable:
+
+```vim
+let g:livepreview_bibtex = 'upbibtex'
+```
+
+### Dvi
+`LLP` converts `dvi` files to `pdf` only if `g:livepreview_dvipdf` variable is set:
+
+```vim
+let g:livepreview_dvipdf = 'xdvipdfmx'
 ```
 
 Known issues
