@@ -191,7 +191,9 @@ EEOOFF
                 \               'TEXINPUTS=' . l:tmp_root_dir
                 \                            . ':' . b:livepreview_buf_data['root_dir']
                 \                            . ': ' .
-                \       'bibtex ' . l:tmp_root_dir . '/*.aux' .
+                \       s:bibtex . ' ' . l:tmp_root_dir . '/*.aux' .
+                \ ' && ' .
+                \       b:livepreview_buf_data['run_cmd'] .
                 \ ' && ' .
                 \       b:livepreview_buf_data['run_cmd']
 
@@ -201,6 +203,25 @@ EEOOFF
         echo 'Failed to compile bibliography'
         lcd -
         return
+    endif
+
+    if s:is_use_dvipdf
+        let l:tmp_root_dvi = glob(l:livepreview_buf_data['root_dir'] . '/**/*.dvi') . glob(l:livepreview_buf_data['root_dir'] . '/**/*.xdv')
+        let b:livepreview_buf_data['run_cmd'] =
+                \       'env ' .
+                \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
+                \               'TEXINPUTS=' . l:tmp_root_dir
+                \                            . ':' . b:livepreview_buf_data['root_dir']
+                \                            . ': ' .
+                \       s:dvipdf . ' ' .
+                \               '-o ' . l:tmp_out_file . ' ' .
+                \               l:tmp_root_dvi
+        silent call system(b:livepreview_buf_data['run_cmd'])
+        if v:shell_error != 0
+            echo 'Failed to compile dvi'
+            lcd -
+            return
+        endif
     endif
 
     call s:RunInBackground(s:previewer . ' ' . l:tmp_out_file)
@@ -249,6 +270,23 @@ EEOOFF
                 break
             endif
         endfor
+    endif
+
+    if exists('g:livepreview_bibtex')
+        let s:bibtex = g:livepreview_bibtex
+    else
+        for possible_bibtex in ['bibtex']
+            if executable(possible_bibtex)
+                let s:bibtex = possible_bibtex
+                break
+            endif
+        endfor
+    endif
+
+    let s:is_use_dvipdf = 0
+    if exists('g:livepreview_dvipdf')
+        let s:dvipdf = g:livepreview_dvipdf
+        let s:is_use_dvipdf = 1
     endif
 
     return 0
