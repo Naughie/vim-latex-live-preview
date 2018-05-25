@@ -185,7 +185,7 @@ EEOOFF
         endfor
 
         " Update compile command with bibliography
-        let b:livepreview_buf_data['run_cmd'] =
+        let b:livepreview_buf_data['run_cmd_bibtex'] =
                 \       'env ' .
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
                 \               'TEXINPUTS=' . l:tmp_root_dir
@@ -197,7 +197,8 @@ EEOOFF
                 \ ' && ' .
                 \       b:livepreview_buf_data['run_cmd']
 
-        silent call system(b:livepreview_buf_data['run_cmd'])
+        let b:livepreview_buf_data['run_cmd'] = b:livepreview_buf_data['run_cmd'] . ' && ' . b:livepreview_buf_data['run_cmd_bibtex']
+        silent call system(b:livepreview_buf_data['run_cmd_bibtex'])
     endif
     if v:shell_error != 0
         echo 'Failed to compile bibliography'
@@ -207,7 +208,7 @@ EEOOFF
 
     if s:is_use_dvipdf
         let l:tmp_root_dvi = glob(l:tmp_root_dir . '/**/*.dvi') . glob(l:tmp_root_dir . '/**/*.xdv')
-        let b:livepreview_buf_data['run_cmd'] =
+        let b:livepreview_buf_data['run_cmd_dvipdf'] =
                 \       'env ' .
                 \               'TEXMFOUTPUT=' . l:tmp_root_dir . ' ' .
                 \               'TEXINPUTS=' . l:tmp_root_dir
@@ -216,7 +217,9 @@ EEOOFF
                 \       s:dvipdf . ' ' .
                 \               '-o ' . l:tmp_out_file . ' ' .
                 \               l:tmp_root_dvi
-        silent call system(b:livepreview_buf_data['run_cmd'])
+
+        let b:livepreview_buf_data['run_cmd'] = b:livepreview_buf_data['run_cmd'] . ' && ' . b:livepreview_buf_data['run_cmd_dvipdf']
+        silent call system(b:livepreview_buf_data['run_cmd_dvipdf'])
         if v:shell_error != 0
             echo 'Failed to compile dvi'
             lcd -
